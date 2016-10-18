@@ -41,6 +41,7 @@
             {{facet.val}}
           {% else %}
           <a href="{{ facet_url ~ "&StudyDescription=" ~ facet.val }}">
+            <input type="checkbox" name="StudyDescription" value="{{facet.val}}">
             <span class="tag tag-default tag-pill pull-xs-right">{{facet.count}}</span>
             {{facet.val}}
           </a>
@@ -64,6 +65,30 @@
             {{facet.val}}
           {% else %}
           <a href="{{ facet_url ~ "&SeriesDescription=" ~ facet.val|e }}">
+            <input type="checkbox" name="SeriesDescription" value="{{facet.val}}">
+            <span class="tag tag-default tag-pill pull-xs-right">{{facet.count}}</span>
+            {{facet.val}}
+          </a>
+          {% endif %}
+        </li>
+        {% endfor %}
+        <br>
+      </ul>
+      {% endif %}
+
+      {% if facets.InstitutionName %}
+      <ul class="list-group small">
+        <a href="#" class="list-group-item active">
+          Institution Name
+        </a>
+        {% for facet in facets.InstitutionName.buckets %}
+        <li class="list-group-item">
+          {% if disable_links %}
+          <span class="tag tag-default tag-pill pull-xs-right">{{facet.count}}</span>
+            {{facet.val}}
+          {% else %}
+          <a href="{{ facet_url ~ "&InstitutionName=" ~ facet.val|e }}">
+            <input type="checkbox" name="InstitutionName" value="{{facet.val}}">
             <span class="tag tag-default tag-pill pull-xs-right">{{facet.count}}</span>
             {{facet.val}}
           </a>
@@ -92,6 +117,7 @@
               <th>Study Description</th>
               <th>Series Description</th>
               <th>Referring Physician</th>
+              <th>Institution Name</th>
             </tr>
           </thead>
           <tbody>
@@ -106,6 +132,7 @@
               <td>{% if doc['StudyDescription'] is defined %} {{ doc['StudyDescription'][0] }} {% endif %}</td>
               <td>{% if doc['SeriesDescription'] is defined %} {{ doc['SeriesDescription'][0] }} {% endif %}</td>
               <td>{% if doc['ReferringPhysicianName'] is defined %} {{ doc['ReferringPhysicianName'][0] }} {% endif %}</td>
+              <td>{% if doc['InstitutionName'] is defined %} {{ doc['InstitutionName'][0] }} {% endif %}</td>
             </tr>
             {% endfor %}
           </tbody>

@@ -6,8 +6,10 @@ default_payload = {'start': 0, 'rows': 500, 'wt': 'json', 'q': '*:*',
                    'json.facet':
                        '{ SeriesDescription: '
                        '{ type:terms, field:SeriesDescription}, '
-                       'StudyDescription: '
-                       '{ type:terms, field:StudyDescription}}'}
+                       ' StudyDescription: '
+                       '{ type:terms, field:StudyDescription},'
+                       ' InstitutionName: '
+                       '{ type:terms, field:InstitutionName}}'}
 
 
 def create_payload(search_term, start_date, end_date, study_desc, series_desc):
