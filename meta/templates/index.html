@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" class="w-100">
   <title>PacsCrawler </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/tachyons/css/tachyons.min.css">
+  <link rel="stylesheet" href="../../static/css/tachyons.min.css">
   <body class="bg-white black-80">
-    <nav class="pa1 pa4-ns">
+    <nav class="pa1 pa4-ns bg-light-gray">
       <a class="link dim black b f6 f5-ns dib mr3" href="#" title="Home">PacsCrawler</a>
       <div class="cf dib w-80">
         <label class="pr1" for="search-input">Search PACS for </label>
@@ -13,28 +13,113 @@
       </div>
     </nav>
 
-    <main class="pa4 black-80">
-      <form class="measure center">
-        <fieldset id="extended_search" class="ba b--transparent ph0 mh0">
-          <legend class="f4 fw6 ph0 mh0">Extended Search</legend>
+    <main class="pa4 pt0 black-80 cf bg-light-gray w-100">
+      <div class="cf">
+        <div class="fl w-40 tc">
+          <fieldset id="extended_search_p1" class="ba b--transparent ph0 mh0">
           <div class="mt3">
-            <label class="db fw6 lh-copy f6" for="study-description">Email</label>
-            <input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address"  id="study-description">
+            <label class="db fw6 tl lh-copy f6" for="study-description-input">Study Description</label>
+            <input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                   placeholder="e.g. CT Schaedel" type="text" name="StudyDescription"  id="study-description-input" value="{{ params.StudyDescription }}">
+          </div>
+          <div class="mt3">
+            <label class="db fw6 tl lh-copy f6" for="series-description-input">Series Description</label>
+            <input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                   placeholder="e.g. CT Schaedel" type="text" name="SeriesDescription"  id="series-description-input" value="{{ params.SeriesDescription }}">
           </div>
           <div class="mv3">
-            <label class="db fw6 lh-copy f6" for="password">Password</label>
-            <input class="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password"  id="password">
+            <label class="db fw6 tl lh-copy f6" for="accession-number-input">Accession Number</label>
+            <input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
+                   type="text" name="AccessionNumber"  id="accession-number-input" value="{{ params.AccessionNumber }}">
           </div>
-          <label class="pa0 ma0 lh-copy f6 pointer"><input type="checkbox"> Remember me</label>
+          <label class="db fw6 tl lh-copy f6">Modality</label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="CT" {% if 'CT' in modalities %} checked {% endif %}> CT
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="MR" {% if 'MR' in modalities %} checked {% endif %}> MR
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="PT" {% if 'PT' in modalities %} checked {% endif %}> PT
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="CR" {% if 'CR' in modalities %} checked {% endif %}> CR
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="XA" {% if 'XA' in modalities %} checked {% endif %}> XA
+          </label>
+            <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="SR" {% if 'SR' in modalities %} checked {% endif %}> SR
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="NM" {% if 'NM' in modalities %} checked {% endif %}> NM
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="MG" {% if 'MG' in modalities %} checked {% endif %}> MG
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="DX" {% if 'DX' in modalities %} checked {% endif %}> DX
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="RF" {% if 'RD' in modalities %} checked {% endif %}> RF
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="OT" {% if 'OT' in modalities %} checked {% endif %}> OT
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="PR" {% if 'PR' in modalities %} checked {% endif %}> PR
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="KO" {% if 'KO' in modalities %} checked {% endif %}> KO
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="SC" {% if 'SC' in modalities %} checked {% endif %}> SC
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="SD" {% if 'SD' in modalities %} checked {% endif %}> SD
+          </label>
+          <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="PX" {% if 'PX' in modalities %} checked {% endif %}> PX
+          </label>
+         <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="GEMS PET RAW" {% if 'GEMS PET RAW' in modalities %} checked {% endif %}> GEMS PET RAW
+          </label>
+            <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="xa" {% if 'xa' in modalities %} checked {% endif %}> xa
+          </label>
+            <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="DR" {% if 'DR' in modalities %} checked {% endif %}> DR
+          </label>
+            <label class="pa0 ma0 tl lh-copy f6 pointer">
+            <input class="form-check-input" type="checkbox" name="Modality" value="CR/DX" {% if 'CR/DX' in modalities %} checked {% endif %}> CR/DX
+          </label>
         </fieldset>
-        <div class="">
-          <input class="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in">
         </div>
-        <div class="lh-copy mt3">
-          <a href="#0" class="f6 link dim black db">Sign up</a>
-          <a href="#0" class="f6 link dim black db">Forgot yor password?</a>
+        <div class="fl w-40 ml5 tc">
+          <fieldset id="extended_search_p2" class="ba b--transparent ph0 mh0">
+            <div class="mt3">
+              <label class="db fw6 tl lh-copy f6" for="patient-name-input">Patient Name</label>
+              <input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" placeholder="Hans Mueller" type="text" name="PatientName"  id="patient-name-input" value="{{ params.PatientName }}">
+            </div>
+            <div class="mt3">
+              <label class="db fw6 tl lh-copy f6" for="patient-id-input">Patient Name</label>
+              <input class="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="PatientID"  id="patient-id-input" value="{{ params.PatientID }}">
+            </div>
+
+            <div class="mt3">
+            <div class="fl w-50 bg-light-gray tc">
+              <label class="db fw6 tl lh-copy f6" for="start-date-input">Start Date</label>
+              <input class="fl pa2 input-reset ba bg-transparent hover-bg-black hover-white" type="text" name="PatientID"  id="start-date-input" value="{{ params.StartDate }}">
+            </div>
+            <div class="fl w-50 bg-light-gray tc">
+              <label class="db fw6 tl lh-copy f6" for="end-date-input">End Date</label>
+              <input class="fl dib pa2 input-reset ba bg-transparent hover-bg-black hover-white" type="text" name="PatientID"  id="end-date-input" value="{{ params.EndDate }}">
+            </div>
+            </div>
+          </fieldset>
         </div>
-      </form>
+      </div>
+
     </main>
   </body>
 </html>
