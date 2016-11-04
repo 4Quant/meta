@@ -1,26 +1,12 @@
 {% extends "base.html" %}
 
 {% block search %}
-<div class="pa4-l">
-  <form class="bg-light-red mw7 center pa4 br2-ns ba b--black-10">
-    <fieldset class="cf bn ma0 pa0">
-      <legend class="pa0 f5 f4-ns mb3 black-80">Search the PACS</legend>
-      <div class="cf">
-        <input class="fl f6 f5-l input-reset bn black-80 bg-white fl pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns"
-               placeholder="Your search term" type="text" name="query" value="" id="search-input" autofocus>
-        <input class="fl f6 f5-l button-reset pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns" type="submit" value="Search">
-      </div>
-    </fieldset>
-  </form>
-</div>
-
-
 <form id="search-form" action="/search">
   <div class="form-group row">
     <label for="search-input" class="col-sm-2 col-form-label">Search for</label>
     <div class="col-sm-6">
       <div class="input-group">
-        <input class="form-control" type="text" placeholder="E.g. CT Schaedel" id="search-input2" name="query" value="{{ params.query }}" autofocus>
+        <input class="form-control" type="text" placeholder="E.g. CT Schaedel" id="search-input" name="query" value="{{ params.query }}" autofocus>
         <span class="input-group-btn">
           <button class="btn btn-primary" type="submit">Search</button>
         </span>
