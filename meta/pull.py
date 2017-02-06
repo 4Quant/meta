@@ -1,37 +1,83 @@
 import subprocess
+import shlex
 import os
 
-from meta.settings import OUTPUT_DIR
-from meta.command import BASE_COMMAND, transfer_command
-from meta.app import app
+from concurrent.futures import ThreadPoolExecutor, Future
+
+from meta.command import base_command, transfer_command
+from meta.task import download_task, transfer_task, finish_task
+from meta.app import app, OUTPUT_DIR
+
+
+POOL = ThreadPoolExecutor(1)
+FUTURES = []  # type: List[Future]
+FUTURES_TRANSFER = []
+
+
+def transfer_status():
+    done_tasks = [future.task for future in FUTURES_TRANSFER if future.done()]
+    waiting_tasks = [future.task for future in FUTURES_TRANSFER if not future.done()]
+    return (waiting_tasks, done_tasks)
+
+
+def download_status():
+    """ Returns all done tasks and open tasks as lists.
+    A task is a named tuple.
+    """
+    done_tasks = [future.task for future in FUTURES if future.done()]
+    waiting_tasks = [future.task for future in FUTURES if not future.done()]
+    return (waiting_tasks, done_tasks)
+
+
+def _download_done(future):
+    future.task = finish_task(future)
 
 
 def download_series(series_list, dir_name):
-    image_folder = os.path.join(os.getcwd(), OUTPUT_DIR, dir_name)
-
-    if not os.path.exists(image_folder):
-        app.logger.debug(
-            "Folder {0} does not exists, creating it".format(image_folder))
-        os.makedirs(image_folder)
+    """ Download the series. The folder structure is as follows:
+        MAIN_DOWNLOAD_DIR / USER_DEFINED / PATIENTID / ACCESSION_NUMBER /
+          / SERIES_NUMER
+    """
 
     for entry in series_list:
+        image_folder = _create_image_dir(entry, dir_name)
         study_instance_uid = entry['study_id']
         series_instance_uid = entry['series_id']
-        command = BASE_COMMAND \
+        command = base_command() \
                   + ' --output-directory ' + image_folder \
                   + ' -k StudyInstanceUID=' + study_instance_uid \
                   + ' -k SeriesInstanceUID=' + series_instance_uid
-        app.logger.debug('Running command %s', command)
-        subprocess.call(command, shell=True)
+        args = shlex.split(command)
+        app.logger.debug('Running args %s', args)
+        future = POOL.submit(subprocess.run, args, shell=False)
+        future.task = download_task(entry, dir_name)
+        future.add_done_callback(_download_done)
+        FUTURES.append(future)
+    return len(series_list)
 
 
 def transfer_series(series_list, target):
+    """ Transfer the series to target PACS node. """
     study_id_list = [entry['study_id'] for entry in series_list]
     study_ids = set(study_id_list)
     app.logger.debug('Transferring ids: %s', study_ids)
 
     for study_id in study_ids:
-        command = transfer_command(target) \
-                  + ' -k StudyInstanceUID=' + study_id
-        app.logger.debug('Running command %s', command)
-        subprocess.call(command, shell=True)
+        command = transfer_command(target, study_id)
+        args = shlex.split(command)
+        app.logger.debug('Running args %s', args)
+        future = POOL.submit(subprocess.run, args, shell=False)
+        future.task = transfer_task(study_id)
+        FUTURES_TRANSFER.append(future)
+    return len(study_ids)
+
+
+def _create_image_dir(entry, dir_name):
+    patient_id = entry['patient_id']
+    accession_number = entry['accession_number']
+    series_number = entry['series_number']
+    image_folder = os.path.join(OUTPUT_DIR, dir_name, patient_id,
+                                accession_number, series_number)
+    if not os.path.exists(image_folder):
+        os.makedirs(image_folder, exist_ok=True)
+    return image_folder

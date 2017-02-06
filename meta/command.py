@@ -1,18 +1,15 @@
-from meta.settings import DCMTK_BIN, CONNECTION, TRANSFER_CONNECTION, DCMIN
+from meta.app import DCMTK_BIN, DCMIN, AE_TITLE, AE_CALLED, \
+                     PEER_PORT, INCOMING_PORT, PEER_ADDRESS
 
-BASE_COMMAND = DCMTK_BIN \
+
+CONNECTION = '-aet {} -aec {} {} {} +P {}'.format(AE_TITLE, AE_CALLED, \
+             PEER_ADDRESS, PEER_PORT, INCOMING_PORT)
+
+
+def base_command():
+    return DCMTK_BIN \
                + 'movescu -v -S -k QueryRetrieveLevel=SERIES ' \
                + CONNECTION
-
-
-TRANSFER_COMMAND = DCMTK_BIN \
-                   + 'movescu -v -S ' \
-                   + TRANSFER_CONNECTION + ' -k QueryRetrieveLevel=STUDY '
-
-
-def transfer_command(target):
-    return DCMTK_BIN + 'movescu -v -S ' \
-           + transfer_target(target) + ' -k QueryRetrieveLevel=STUDY '
 
 
 TARGET_MAPPING = {
@@ -22,7 +19,18 @@ TARGET_MAPPING = {
 }
 
 
-def transfer_target(target):
+def _transfer_part(node, study_id):
+    return '-aem {} -aet {} -aec {} {} {} +P {} -k StudyInstanceUID={} {}' \
+                        .format(node, AE_TITLE, AE_CALLED, PEER_ADDRESS, \
+                        PEER_PORT, INCOMING_PORT, study_id, DCMIN)
+
+
+def transfer_command(target, study_id):
+    """ Constructs the first part of the transfer command to a PACS node. """
+    return DCMTK_BIN + 'movescu -v -S ' \
+           + _transfer_target(target, study_id)
+
+
+def _transfer_target(target, study_id):
     node = TARGET_MAPPING[target]
-    return '-aem {0} -aet MC526512B -aec GEPACS ' \
-           '10.247.12.145 4100 +P 4101 {1}'.format(node, DCMIN)
+    return _transfer_part(node, study_id)

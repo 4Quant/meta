@@ -1,34 +1,24 @@
 import logging
 from datetime import datetime
 
-from meta.settings import RESULT_LIMIT
 
-default_payload = {'offset': 0, 'limit': RESULT_LIMIT,
+DEFAULT_PAYLOAD = {'offset': 0, 'limit': 100,
                    'query': '*:*',
                    'params': {'group': 'true', 'group.field': 'PatientID',
-                              'group.limit': 10, 'group.ngroups': 'true'},
+                              'group.limit': 1000, 'group.ngroups': 'true'},
                    'facet':
                        {'SeriesDescription':
                         {'type': 'terms', 'field': 'SeriesDescription'},
                         'StudyDescription':
-                            {'type': 'terms', 'field': 'StudyDescription'},
-                        'Pivot':
-                            {'type': 'terms', 'field': 'PatientID',
-                             'limit': 100,
-                             'facet': {
-                                 'Studies': {
-                                     'type': 'terms',
-                                     'field': 'AccessionNumber'
-                                     }
-                             }
-                            }
+                            {'type': 'terms', 'field': 'StudyDescription'}
                        }
                   }
 
 
-def query_body(args):
-    body = default_payload.copy()
-    body['query'] = args.get('query', '*')
+def query_body(args, limit=100):
+    body = DEFAULT_PAYLOAD.copy()
+    body['limit'] = limit
+    body['query'] = args.get('query', '*:*')
     body['offset'] = args.get('offset', '0')
 
     date_range = _create_date_range(args.get('StartDate'), args.get('EndDate'))
